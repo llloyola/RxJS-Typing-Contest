@@ -1,6 +1,7 @@
 body{
     font-family: monospace;
-    background-color:mintcream;
+    /* background-color:mintcream; */
+    background-color: white;
 }
 
 textarea{
@@ -53,11 +54,11 @@ h1 {
     position: relative;
 }
 
-h1 span {
+.title span,#withjs span {
     position: absolute;
     right: 0;
     width: 0;
-    background-color: mintcream;
+    background-color: white;
     border-left: 1px solid #000;
     animation: machine 3s infinite alternate steps(45);
 }
@@ -89,4 +90,19 @@ h1 span {
     60%{transform: translateY(-50px);}
     70%{transform: rotateY(180deg);}
     100%{transform: translateX(1600px);}
+}
+
+
+#sentenceplaceholder .correcttext {
+  /* color: green; */
+  background-color: green;
+}
+
+#sentenceplaceholder .wrongtext {
+  /* color: red; */
+  background-color: red;
+}
+
+#textinput {
+  font-size: 2em;
 }
