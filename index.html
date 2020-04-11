@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <link rel=stylesheet href="style.css">
+    <meta charset="UTF-8">
+    <title>Juego De Tipeo</title>
+
+    <!-- Bootstrap-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+    <!-- RxJS -->
+    <script src="https://unpkg.com/rxjs/bundles/rxjs.umd.js"></script>
+</head>
+<body>
+
+  <div class="container">
+    <div class="row title">
+        <h1> Welcome to Typing-Contest con css. <span>&#160;</span></h1>
+    </div>
+
+    <div class="row">
+      <div class="competencia">
+          <h1>Competidores</h1>
+      </div>
+    </div>
+    <div class="row">
+      <div id="box">
+          <hr />
+          <div class="ImgJ1" id="ImgJ1"> J1 <img src="https://i.pinimg.com/originals/0a/1f/89/0a1f897921a2e94cb3621199f2adef19.jpg" >
+              <div class="winner-message">Winner</div>
+              <div class="loser-message">Loser</div>
+          </div>
+          <hr />
+          <div class="ImgJ2" id="ImgJ2"> J2 <img src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/80ce0aaf-a48f-4946-b0e0-775c5ae3104b/dbcejhu-77f4012f-c339-441a-ada0-2aa47705381f.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzgwY2UwYWFmLWE0OGYtNDk0Ni1iMGUwLTc3NWM1YWUzMTA0YlwvZGJjZWpodS03N2Y0MDEyZi1jMzM5LTQ0MWEtYWRhMC0yYWE0NzcwNTM4MWYucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.I6voUiVII2P9f-rMe0go0FgJ3xFZ-2LZrCyy6f0u9co" >
+              <div class="winner-message">Winner</div>
+              <div class="loser-message">Loser</div>
+          </div>
+          <hr />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12">
+        <h3>Frase a escribir:</h3>
+      </div>
+      <div class="col-sm-12 text-center">
+        <h1 id="sentenceplaceholder">"Acá se mostraría la frase" </h1>
+      </div>
+    </div>
+    <div class="row">
+      <div class="areadetexto">
+          <h3>Ingrese aquí su respuesta:</h3>
+          <input id="textinput" autocorrect="off" autocomplete="off" cols="50" rows="1"></input>
+      </div>
+    </div>
+    <div class="row">
+      <div id="kirby"></div>
+    </div>
+
+  </div>
+
+</body>
+</html>
+
+<script src="gameclient.js"></script>

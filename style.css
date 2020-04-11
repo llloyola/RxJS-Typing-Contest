@@ -1,0 +1,103 @@
+body{
+    font-family: monospace;
+    /* background-color:mintcream; */
+    background-color: white;
+}
+
+textarea{
+    border:3px solid #000;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.ImgJ1 {
+    margin: 20px;
+}
+
+.ImgJ2 {
+    margin: 20px;
+}
+
+img{
+    height: 50px;
+    width: 50px;
+
+}
+.competencia{
+    margin: auto;
+    display: table;
+    position: relative;
+}
+
+.winner-message{
+    display: none;
+}
+.loser-message{
+    display: none;
+}
+
+/* linea 45-72 sacado de: https://www.youtube.com/watch?v=As38NrZxeZ4 */
+.title{
+    margin: auto;
+    display: table;
+    position: relative;
+}
+
+h1 {
+    color: black;
+    position: relative;
+}
+
+.title span,#withjs span {
+    position: absolute;
+    right: 0;
+    width: 0;
+    background-color: white;
+    border-left: 1px solid #000;
+    animation: machine 3s infinite alternate steps(45);
+}
+
+@keyframes machine {
+    from {
+        width: 100%;
+    }
+    to {
+        width: 0;
+    }
+}
+/* idea sacada de https://www.youtube.com/watch?v=8KIQ7NRt7mA */
+#kirby{
+    width: 150px;
+    height: 150px;
+    position: relative;
+    background: url("https://pm1.narvii.com/6414/645c0ca05793650da232a85f6b95eeae5a0e31cd_hq.jpg");
+    background-repeat: no-repeat;
+    background-size: contain;
+    bottom: -100px;
+    left: 0px;
+
+    animation: kirby 25s infinite linear 0s;
+}
+
+@keyframes kirby{
+    0%{transform: translateX(70vw);}
+    60%{transform: translateY(-50px);}
+    70%{transform: rotateY(180deg);}
+    100%{transform: translateX(70vw);}
+}
+
+
+#sentenceplaceholder .correcttext {
+  /* color: green; */
+  background-color: green;
+}
+
+#sentenceplaceholder .wrongtext {
+  /* color: red; */
+  background-color: red;
+}
+
+#textinput {
+  font-size: 2em;
+}
