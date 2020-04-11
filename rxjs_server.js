@@ -14,6 +14,7 @@
 	-Usar alguna API gratuita de quotes
 */
 
+/* https://medium.com/@martin.sikora/node-js-websocket-simple-chat-tutorial-2def3a841b61 */
 "use strict";
 
 // Optional. You will see this name in eg. 'ps' or 'top' command

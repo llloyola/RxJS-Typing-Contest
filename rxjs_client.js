@@ -4,6 +4,8 @@ const port = 1338;
 const subject = rxjs.webSocket.webSocket(`ws://localhost:${port}`);
 
 /* Listening for messages from the server*/
+
+/* https://rxjs-dev.firebaseapp.com/api/webSocket/webSocket */
 subject.subscribe(
   msg => {
     if (msg.type === "game-beginning") {
