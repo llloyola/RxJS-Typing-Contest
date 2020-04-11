@@ -30,18 +30,13 @@ img{
     position: relative;
 }
 
-.winj1{
+.winner-message{
     display: none;
 }
-.losej1{
+.loser-message{
     display: none;
 }
-.winj2{
-    display: none;
-}
-.losej2{
-    display: none;
-}
+
 /* linea 45-72 sacado de: https://www.youtube.com/watch?v=As38NrZxeZ4 */
 .title{
     margin: auto;
@@ -79,17 +74,17 @@ h1 {
     background: url("https://pm1.narvii.com/6414/645c0ca05793650da232a85f6b95eeae5a0e31cd_hq.jpg");
     background-repeat: no-repeat;
     background-size: contain;
-    bottom: -160px;
+    bottom: -100px;
     left: 0px;
 
     animation: kirby 25s infinite linear 0s;
 }
 
 @keyframes kirby{
-    0%{transform: translateX(1600px);}
+    0%{transform: translateX(70vw);}
     60%{transform: translateY(-50px);}
     70%{transform: rotateY(180deg);}
-    100%{transform: translateX(1600px);}
+    100%{transform: translateX(70vw);}
 }
 
 

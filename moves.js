@@ -1,64 +1,51 @@
 let j1 = document.getElementById("ImgJ1");
 let j2 = document.getElementById("ImgJ2");
-let winj1 = document.getElementById("winj1");
-let winj2 = document.getElementById("winj2");
-let losej1 = document.getElementById("losej1");
-let losej2 = document.getElementById("losej2");
-var Left_j1 = 0;
-var Left_j2 = 0;
+let game_box = document.getElementById("box");
 
-function RightMove(jugador, mov){
-    if (jugador == j1){
-        Left_j1 += mov
-        j1.style.marginLeft = Left_j1 + "px";
-    }
-    if (jugador == j2){
-        Left_j2 += mov
-        j2.style.marginLeft = Left_j2 + "px";
-    }
-   
-}
+const maxRaceLength = game_box.clientWidth - j1.getElementsByTagName("img")[0].clientWidth;
 
-function ReadMsje (string){
-    if (Left_j1 > 1600 || Left_j2 > 1600) {
-        if (Left_j1 > Left_j2) {
-            ShowText(j1);
-            return
-        }
-        if (Left_j2 > Left_j1) {
-            ShowText(j2);
-            return
-        }
+function movePlayerToTheRight(player, mov){
+    if (player === 0){
+        j1.style.marginLeft = mov*maxRaceLength + "px";
     }
-    var msje = string.split(" ");
-    if ((msje[0]) === "jugador_1") {
-        RightMove(j1, parseInt(msje[1]));
+    if (player === 1){
+        j2.style.marginLeft = mov*maxRaceLength + "px";
     }
-    if ((msje[0]) === "jugador_2"){
-        RightMove(j2, parseInt(msje[1]));
-    }
-}
 
-function moves(){
-    let player = Math.floor(Math.random()*(2))+1;
-    let mov = Math.floor(Math.random()*(15-10))+10;
-    var str = "jugador_";
-    str += player;
-    str += " ";
-    str += mov;
-    ReadMsje(str);
-}
-;
+};
 
-function ShowText(jugador){
-    if (jugador == j1) {
-        winj1.style.display = "block";
-        losej2.style.display = "block";
-    }
-    if (jugador == j2) {
-        winj2.style.display = "block";
-        losej1.style.display = "block";
+export const updatePlayerPosition = (player, percentage) => {
+    if (percentage >= 1) percentage = 1;
+
+    movePlayerToTheRight(player, percentage);
+
+    if (percentage >= 1){
+        showWinText(player);
     }
 };
 
-setInterval('moves()', 100);
+function showWinText(player){
+    if (player === 0) {
+        j1.getElementsByClassName("winner-message")[0].style.display = "block";
+        j2.getElementsByClassName("loser-message")[0].style.display = "block";
+    }
+    if (player === 1) {
+        j2.getElementsByClassName("winner-message")[0].style.display = "block";
+        j1.getElementsByClassName("loser-message")[0].style.display = "block";
+    }
+};
+
+
+/*
+let g = 0;
+
+function moves(){
+    let player = 1;
+    let mov = g + 0.05;
+    g = mov;
+    updatePlayerPosition(player, mov);
+};
+
+setInterval('moves()', 1000);
+*/
+

@@ -16,10 +16,12 @@
 
 "use strict";
 
-// Optional. You will see this name in eg. 'ps' or 'top' command
-process.title = 'node-chat';
+const fetch = require("node-fetch");
 
-// Port where we'll run the websocket server
+// Optional. You will see this name in eg. 'ps' or 'top' command
+process.title = 'typing-race';
+
+// Websocket server port for development
 var webSocketsServerPort = 1338;
 
 // websocket and http servers
@@ -29,6 +31,7 @@ var http = require('http');
 /**
  * Global variables
  */
+
 // latest 100 messages
 var history = [ ];
 // list of currently connected clients (users)
@@ -38,21 +41,25 @@ var clients = [ ];
  * Helper function for escaping input strings
  */
 function htmlEntities(str) {
-    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;')
-                      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    return String(str).replace(/&/g, '&amp;')
+                      .replace(/</g, '&lt;')
+                      .replace(/>/g, '&gt;')
+                      .replace(/"/g, '&quot;');
 }
 
 /* API Function */
-async function randomQuote() {
-  const response = await fetch('https://api.quotable.io/random');
-  const data = await response.json();
-  console.log(`${data.content}`);
+function randomQuote() {
+  return fetch('https://api.quotable.io/random')
+  .then((response) => response.json())
+  .then((response) => response.content)
+  .then((content) => content.replace(/\n/g, ''));
 }
 
 // Array with some colors
 const PLAYER_COUNT = 2;
 var playersNumbers = [...Array(PLAYER_COUNT).keys()];
 var pointer = 0;
+var sentence = "";
 
 /**
  * HTTP server
@@ -76,7 +83,10 @@ var wsServer = new webSocketServer({
 // This callback function is called every time someone
 // tries to connect to the WebSocket server
 wsServer.on('request', function(request) {
-    console.log((new Date()) + ' Connection from origin ' + request.origin + '.');
+    if (clients.length === PLAYER_COUNT) {
+        return
+    }
+    console.log(`${new Date()} Connection from origin ${request.origin}.`);
 
     // accept connection - you should check 'request.origin' to make sure that
     // client is connecting from your website
@@ -87,10 +97,8 @@ wsServer.on('request', function(request) {
     var userName = false;
     var userPlayer = false;
 
-		let sentence = "Apuesto a que nunca has visto a un burro volar";
-		// let sentence = await randomQuote();
+    console.log(`${new Date()} Connection accepted.`);
 
-    console.log((new Date()) + ' Connection accepted.');
 
     // send back chat history
     if (history.length > 0) {
@@ -101,30 +109,30 @@ wsServer.on('request', function(request) {
     connection.on('message', function(message) {
         if (message.type === 'utf8') { // accept only text
             if (userName === false) { // first message sent by user is their name
-                // remember user name
-                userName = htmlEntities(message.utf8Data);
-                // get the next player number and send it back to the user
+                userName = message.utf8Data;
                 userPlayer = playersNumbers.shift();
                 connection.sendUTF(JSON.stringify({ type:'player', data: userPlayer }));
-                console.log((new Date()) + ' User is known as: ' + userName
-                            + ' with player number' + userPlayer)
+                console.log(`${new Date()} User is known as ${userName} with number ${userPlayer}`);
 
 
-							// If all players are connected send "start game" message
-							if (clients.length === PLAYER_COUNT) {
-                for (var i=0; i < clients.length; i++) {
-                  clients[i].sendUTF(JSON.stringify({ type:'game-beginning', data: sentence }));
+                // If all players are connected send "start game" message
+                if (clients.length === PLAYER_COUNT) {
+                    const frases = Promise.all([randomQuote(), randomQuote(), randomQuote()])
+                    .then(result => {
+                        sentence = result.join(' ');
+                        for (var i=0; i < clients.length; i++) {
+                            clients[i].sendUTF(JSON.stringify({ type:'game-beginning', data: sentence }));
+                        }
+                        console.log(`${new Date()} A match is about to start!  ${userPlayer} - ${userName}`);
+                    });
+                    
                 }
-                console.log((new Date()) + ' A match is about to start! ' + userName
-                            + ' with player number' + userPlayer)
-							}
 
             } else { // log and broadcast the message
-                console.log((new Date()) + ' Received Message from '
-                            + userName + ': ' + message.utf8Data);
+                console.log(`${new Date()} Received message from player ${userPlayer}: ${message.utf8Data}`);
                 
 
-                var playerProgress = parseInt(htmlEntities(message.utf8Data));
+                var playerProgress = parseInt(htmlEntities(message.utf8Data)) / sentence.length;
 
                 // we want to keep history of all sent messages
                 var obj = {
@@ -143,7 +151,7 @@ wsServer.on('request', function(request) {
                 }
 
                 // if player progress exceeds sentence length end game
-                if (playerProgress > sentence.length) {
+                if (playerProgress === 1) {
                   for (var i=0; i < clients.length; i++) {
                     clients[i].sendUTF(JSON.stringify({ type:'game-ending', data: {"player": userPlayer} }));
                   }
@@ -155,12 +163,12 @@ wsServer.on('request', function(request) {
     // user disconnected
     connection.on('close', function(connection) {
         if (userName !== false && userPlayer !== false) {
-            console.log((new Date()) + " Peer "
-                + connection.remoteAddress + " disconnected.");
+            console.log(`${new Date()} Peer ${userPlayer} disconnected.`);
             // remove user from the list of connected clients
             clients.splice(index, 1);
             // push back user's number to be reused by another user
             playersNumbers.push(userPlayer);
+            playersNumbers = playersNumbers.sort();
         }
     });
 
