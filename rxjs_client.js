@@ -1,20 +1,36 @@
-const makeClient = require('./modules/client')
-const makeParser = require('./modules/parser')
+/* wena wena soy el cliente */
 
-const config = {
-  parser: makeParser(),
-  port: 65432
-}
+const port = 1338;
+const subject = rxjs.webSocket.webSocket(`ws://localhost:${port}`);
 
-const { stream, send } = makeClient()
+/* Listening for messages from the server*/
+subject.subscribe(
+  msg => {
+    if (msg.type === "game-beginning") {
+    
+    }
+    else if (msg.type === "message"){
+      let player = msg.data.userPlayer;
+      let progress = msg.data.playerProgress;
+    }
+    else if (msg.type === "game-ending"){
+      
+    }
+   }, // Called whenever there is a message from the server.
+   err => console.log(err), // Called if at any point WebSocket API signals some kind of error.
+   () => console.log('complete') // Called when connection is closed (for whatever reason).
+ );
 
-stream
-  .subscribe(
-    (data) => console.log('New message!', data)
-  )
 
-send({
-  data: {
-    action: 'Message from the client!'
-  }
-})
+/* Pushing messages to the server */
+subject.subscribe();
+// Note that at least one consumer has to subscribe to the created subject - otherwise "nexted" values will be just buffered and not sent,
+// since no connection was established!
+ 
+subject.next({message: 'some message'});
+// This will send a message to the server once a connection is made. Remember value is serialized with JSON.stringify by default!
+ 
+//subject.complete(); // Closes the connection.
+ 
+//subject.error({code: 4000, reason: 'I think our app just broke!'});
+// Also closes the connection, but let's the server know that this closing is caused by some error.
