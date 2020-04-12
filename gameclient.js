@@ -1,5 +1,18 @@
 /**********************
 
+  Variables
+
+**********************/
+
+
+
+const CHECK_INTERVAL = 10;
+let pointer = 0;
+
+
+
+/**********************
+
   Graphic Interface
 
 **********************/
@@ -83,6 +96,18 @@ const resetPlayersPosition = (array) => {
   array.forEach((e) => resetPlayerPosition(e));
 }
 
+const resetGame = () => {
+  const playersList = [0, 1, 2];
+  showModal();
+  resetPlayersPosition(playersList);
+  pointer = 0;
+
+  playersList.forEach((e) => {
+    document.getElementById(`ImgPlayer${e}`).getElementsByClassName("loser-message")[0].style.display = "none";
+    document.getElementById(`ImgPlayer${e}`).getElementsByClassName("winner-message")[0].style.display = "none";
+  });
+
+}
 
 
 
@@ -100,19 +125,6 @@ const subject = rxjs.webSocket.webSocket(`ws://typing-contest-game.herokuapp.com
 
 // Development websocket
 //const subject = rxjs.webSocket.webSocket(`ws://localhost:1338`);
-
-
-
-/**********************
-
-  Variables
-
-**********************/
-
-
-
-const CHECK_INTERVAL = 10;
-let pointer = 0;
 
 
 
@@ -150,8 +162,7 @@ subject.subscribe(
       updatePlayerPosition(player, progress);
     }
     else if (msg.type === "game-ending"){
-      showModal();
-      resetPlayersPosition([0, 1, 2]);
+      resetGame();
     }
     else if (msg.type === "player") {
       console.log("You are player number  " + msg.data);
@@ -174,7 +185,7 @@ subject.subscribe(
     }
   },
   // Called if at any point WebSocket API signals some kind of error.
-  err => console.log(err), // Called if at any point WebSocket API signals some kind of error.
+  err => console.log(err),
   // Called when connection is closed (for whatever reason).
   () => console.log('complete')
 );
