@@ -59,7 +59,7 @@ const makeUsersList = (array) => {
 
     containment.append(title);
     containment.append(list);
-    
+
     return containment[0];
 };
 
@@ -96,10 +96,10 @@ const resetPlayersPosition = (array) => {
 
 
 // Production websocket
-//const subject = rxjs.webSocket.webSocket(`ws://typing-contest-game.herokuapp.com`);
+const subject = rxjs.webSocket.webSocket(`ws://typing-contest-game.herokuapp.com`);
 
 // Development websocket
-const subject = rxjs.webSocket.webSocket(`ws://localhost:1338`);
+//const subject = rxjs.webSocket.webSocket(`ws://localhost:1338`);
 
 
 
