@@ -1,54 +1,120 @@
+/**********************
+
+  Graphic Interface
+
+**********************/
 
 
-/* Listening for messages from the server*/
-
-/* https://rxjs-dev.firebaseapp.com/api/webSocket/webSocket */
-
-let j1 = document.getElementById("ImgJ1");
-let j2 = document.getElementById("ImgJ2");
 let game_box = document.getElementById("box");
+const maxRaceLength = game_box.clientWidth - document.getElementById("ImgPlayer0").getElementsByTagName("img")[0].clientWidth;
 
-const maxRaceLength = game_box.clientWidth - j1.getElementsByTagName("img")[0].clientWidth;
 
-function movePlayerToTheRight(player, mov){
-    if (player === 0){
-        j1.style.marginLeft = mov*maxRaceLength + "px";
-    }
-    if (player === 1){
-        j2.style.marginLeft = mov*maxRaceLength + "px";
-    }
-
+const movePlayerToTheRight = (player, mov) => {
+    let playerImg = document.getElementById(`ImgPlayer${player}`);
+    playerImg.style.marginLeft = mov*maxRaceLength + "px";
 };
+
 const updatePlayerPosition = (player, percentage) => {
     if (percentage >= 1) percentage = 1;
-
     movePlayerToTheRight(player, percentage);
-
     if (percentage >= 1){
         showWinText(player);
     }
 };
 
-function showWinText(player){
-    if (player === 0) {
-        j1.getElementsByClassName("winner-message")[0].style.display = "block";
-        j2.getElementsByClassName("loser-message")[0].style.display = "block";
-    }
-    if (player === 1) {
-        j2.getElementsByClassName("winner-message")[0].style.display = "block";
-        j1.getElementsByClassName("loser-message")[0].style.display = "block";
-    }
+const showWinText = player => {
+    let playerNumbers = [0, 1, 2]
+    let playerImg = document.getElementById(`ImgPlayer${player}`);
+    playerImg.getElementsByClassName("winner-message")[0].style.display = "block";
+
+    [0, 1, 2].forEach((e) => {
+      if (e !== player){
+        document.getElementById(`ImgPlayer${e}`).getElementsByClassName("loser-message")[0].style.display = "block";
+      }
+    });
 };
 
-const CHECK_INTERVAL = 10;
+function makeUsersList(array) {
+    // Create containment div
+    let containment = $('<div/>');
+    // Create title:
+    let title = $('<p/>');
+    title.append("Usuarios conectados:");
+    // Create the list element:
+    let list = $('<ul/>');
 
-let pointer = 0;
+    for (var i = 0; i < array.length; i++) {
+        // Create the list item:
+        let item = $('<li/>');
+        // Set its contents:
+        item.append(`${array[i][0]} - ${array[i][1]}`);
+        // Add it to the list:
+        list.append(item);
+    }
+
+    // Finally, return the constructed list:
+    if (array.length === 0){
+      list = "No hay jugadores conectados aún."
+    };
+
+    containment.append(title);
+    containment.append(list);
+    
+    return containment[0];
+};
+
+function hideModalLogin() {
+
+}
+
+function hideModal() {
+  const modal = document.getElementById("modal-bg");
+  modal.style.display = "none";
+}
+
+function showModal() {
+  document.getElementById("modal-insert-name").style.display = "block";
+  const modal = document.getElementById("modal-bg");
+  modal.style.display = "block";
+}
+
+
+
+/**********************
+
+  Websocket definition
+
+**********************/
+
+
 
 // Production websocket
 //const subject = rxjs.webSocket.webSocket(`ws://typing-contest-game.herokuapp.com`);
 
 // Development websocket
 const subject = rxjs.webSocket.webSocket(`ws://localhost:1338`);
+
+
+
+/**********************
+
+  Variables
+
+**********************/
+
+
+
+const CHECK_INTERVAL = 10;
+let pointer = 0;
+
+
+
+/**********************
+
+  Main Code
+
+**********************/
+
 
 
 document.addEventListener("DOMContentLoaded", function(event) {
@@ -62,12 +128,14 @@ sentenceplaceholder.innerHTML = game_sentence;
 text_input.value = "";
 
 subject.subscribe(
+  // Called whenever there is a message from the server.
   msg => {
     console.log(msg);
     if (msg.type === "game-beginning") {
       // Add game sentence
       game_sentence = msg.data;
       sentenceplaceholder.innerHTML = msg.data;
+      hideModal();
     }
     else if (msg.type === "message"){
       let player = msg.data.player;
@@ -76,21 +144,56 @@ subject.subscribe(
     }
     else if (msg.type === "game-ending"){
       subject.complete();
+      subject.subscribe();
     }
     else if (msg.type === "player") {
       console.log("You are player number  " + msg.data);
-      let playernumber = `playername${msg.data}`;
-      let playername = document.getElementById(playernumber);
-      playername.innerHTML = msg.username.replace(/['"]+/g, '');
     }
-  }, // Called whenever there is a message from the server.
+    else if (msg.type === "players") {
+      let playersList = msg.data;
+
+      // Change character names
+      playersList.forEach((e) => {
+        let playerNameDiv = document.getElementById(`playername${e[0]}`);
+        playerNameDiv.innerHTML = e[1];
+      });
+
+      // Add elements to connected players list
+      let playersListDiv = $("#modal-bg").find(".players-list")[0];
+      playersListDiv.innerHTML = "";
+      let divList = makeUsersList(playersList);
+      console.log(divList);
+      playersListDiv.append(divList);
+    }
+  },
+  // Called if at any point WebSocket API signals some kind of error.
   err => console.log(err), // Called if at any point WebSocket API signals some kind of error.
-  () => console.log('complete') // Called when connection is closed (for whatever reason).
+  // Called when connection is closed (for whatever reason).
+  () => console.log('complete')
 );
 
 subject.subscribe();
 
-// Observer for whats being typed on textarea
+// Game Lobby modal
+//$("#modal-btn").click(() => {
+//  console.log("-------");
+//  let text_input = document.getElementById("nameplayer");
+//  subject.next(text_input.value);
+//  text_input.value = "";
+//  document.getElementById("modal-insert-name").style.display = "none";
+//});
+//
+const modalBtn = document.getElementById('modal-btn');
+const clickSubject = rxjs.fromEvent(modalBtn, 'click');
+clickSubject.subscribe(() => {
+  console.log("-------");
+  let text_input = document.getElementById("nameplayer");
+  subject.next(text_input.value);
+  text_input.value = "";
+  document.getElementById("modal-insert-name").style.display = "none";
+});
+
+// In-game typing textarea observer
 const typing_observer = {
  next: function(value) {
    let text = text_input.value;
@@ -105,7 +208,7 @@ const typing_observer = {
      if (text.length >= CHECK_INTERVAL || next_text === ""){
        pointer += text.length;
        subject.next(pointer);
-       text_input.value = "";      
+       text_input.value = "";
      }
    }
  },

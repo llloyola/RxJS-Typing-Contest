@@ -28,20 +28,31 @@
     </div>
     <div class="modal-bg" id="modal-bg">
       <div class="modal-content">
-        <h1>Ingresa tu nombre</h1>
-       <input id="nameplayer" type="text" name="name">
-       <button type="button" class="btn" onclick="modal()">Iniciar</button> 
+        <div id="modal-insert-name">
+          <h1>Ingresa tu nombre</h1>
+          <input id="nameplayer" type="text" name="name">
+          <button id="modal-btn" type="button" class="btn">Ready</button>
+        </div>
+        </br>
+        <div id="modal-players-list">
+          <div class="players-list"></div>
+        </div>
       </div>
-    </div>  
+    </div>
     <div class="row">
       <div id="box">
           <hr />
-          <div class="ImgJ1" id="ImgJ1"> <div id="playername0">J1</div><img src="https://i.pinimg.com/originals/0a/1f/89/0a1f897921a2e94cb3621199f2adef19.jpg" >
+          <div class="ImgJ1" id="ImgPlayer0"> <div id="playername0">J1</div><img src="https://i.pinimg.com/originals/0a/1f/89/0a1f897921a2e94cb3621199f2adef19.jpg" >
               <div class="winner-message">Winner</div>
               <div class="loser-message">Loser</div>
           </div>
           <hr />
-          <div class="ImgJ2" id="ImgJ2"><div id="playername1">J2</div><img src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/80ce0aaf-a48f-4946-b0e0-775c5ae3104b/dbcejhu-77f4012f-c339-441a-ada0-2aa47705381f.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzgwY2UwYWFmLWE0OGYtNDk0Ni1iMGUwLTc3NWM1YWUzMTA0YlwvZGJjZWpodS03N2Y0MDEyZi1jMzM5LTQ0MWEtYWRhMC0yYWE0NzcwNTM4MWYucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.I6voUiVII2P9f-rMe0go0FgJ3xFZ-2LZrCyy6f0u9co" >
+          <div class="ImgJ2" id="ImgPlayer1"><div id="playername1">J2</div><img src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/80ce0aaf-a48f-4946-b0e0-775c5ae3104b/dbcejhu-77f4012f-c339-441a-ada0-2aa47705381f.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzgwY2UwYWFmLWE0OGYtNDk0Ni1iMGUwLTc3NWM1YWUzMTA0YlwvZGJjZWpodS03N2Y0MDEyZi1jMzM5LTQ0MWEtYWRhMC0yYWE0NzcwNTM4MWYucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.I6voUiVII2P9f-rMe0go0FgJ3xFZ-2LZrCyy6f0u9co" >
+              <div class="winner-message">Winner</div>
+              <div class="loser-message">Loser</div>
+          </div>
+          <hr />
+          <div class="ImgJ2" id="ImgPlayer2"><div id="playername2">J2</div><img src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/80ce0aaf-a48f-4946-b0e0-775c5ae3104b/dbcejhu-77f4012f-c339-441a-ada0-2aa47705381f.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzgwY2UwYWFmLWE0OGYtNDk0Ni1iMGUwLTc3NWM1YWUzMTA0YlwvZGJjZWpodS03N2Y0MDEyZi1jMzM5LTQ0MWEtYWRhMC0yYWE0NzcwNTM4MWYucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.I6voUiVII2P9f-rMe0go0FgJ3xFZ-2LZrCyy6f0u9co" >
               <div class="winner-message">Winner</div>
               <div class="loser-message">Loser</div>
           </div>
@@ -72,4 +83,3 @@
 </html>
 
 <script src="gameclient.js"></script>
-<script src="popup.js"></script>
