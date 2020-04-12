@@ -121,7 +121,7 @@ const resetGame = () => {
 
 
 // Production websocket
-const subject = rxjs.webSocket.webSocket(`ws://typing-contest-game.herokuapp.com`);
+const subject = rxjs.webSocket.webSocket(`wss://typing-contest-game.herokuapp.com`);
 
 // Development websocket
 //const subject = rxjs.webSocket.webSocket(`ws://localhost:1338`);
