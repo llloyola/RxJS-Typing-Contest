@@ -34,7 +34,7 @@ const showWinText = player => {
     });
 };
 
-function makeUsersList(array) {
+const makeUsersList = (array) => {
     // Create containment div
     let containment = $('<div/>');
     // Create title:
@@ -63,20 +63,27 @@ function makeUsersList(array) {
     return containment[0];
 };
 
-function hideModalLogin() {
-
-}
-
-function hideModal() {
+const hideModal = () => {
   const modal = document.getElementById("modal-bg");
   modal.style.display = "none";
 }
 
-function showModal() {
+const showModal = () => {
   document.getElementById("modal-insert-name").style.display = "block";
   const modal = document.getElementById("modal-bg");
   modal.style.display = "block";
 }
+
+const resetPlayerPosition = (player) => {
+  let playerImg = document.getElementById(`ImgPlayer${player}`);
+  playerImg.style.marginLeft = "0px";
+}
+
+const resetPlayersPosition = (array) => {
+  array.forEach((e) => resetPlayerPosition(e));
+}
+
+
 
 
 
@@ -143,8 +150,8 @@ subject.subscribe(
       updatePlayerPosition(player, progress);
     }
     else if (msg.type === "game-ending"){
-      subject.complete();
-      subject.subscribe();
+      showModal();
+      resetPlayersPosition([0, 1, 2]);
     }
     else if (msg.type === "player") {
       console.log("You are player number  " + msg.data);
@@ -188,7 +195,7 @@ const clickSubject = rxjs.fromEvent(modalBtn, 'click');
 clickSubject.subscribe(() => {
   console.log("-------");
   let text_input = document.getElementById("nameplayer");
-  subject.next(text_input.value);
+  subject.next({ type: "username", data: text_input.value });
   text_input.value = "";
   document.getElementById("modal-insert-name").style.display = "none";
 });
@@ -201,13 +208,16 @@ const typing_observer = {
    let actual_text = game_sentence.substring(pointer, pointer + text.length);
    let next_text = game_sentence.substring(pointer + text.length);
 
+   const p = document.getElementById('p-progress');
+   p.innerHTML = `${prev_text.length + text.length}/${game_sentence.length}`;
+
    if (text.localeCompare(actual_text)) {
      sentenceplaceholder.innerHTML = `<span class="correcttext" >${prev_text}</span><span class="wrongtext" >${actual_text}</span>${next_text}`;
    } else {
      sentenceplaceholder.innerHTML = `<span class="correcttext" >${prev_text}</span><span class="correcttext" >${actual_text}</span>${next_text}`;
      if (text.length >= CHECK_INTERVAL || next_text === ""){
        pointer += text.length;
-       subject.next(pointer);
+       subject.next({ type: "progress", data: pointer });
        text_input.value = "";
      }
    }
@@ -225,5 +235,30 @@ const observable = rxjs.fromEvent(text_input, "keyup");
 
 // Subscribe to begin listening
 observable.subscribe(typing_observer);
+
+/*
+// Typing count
+const countSubject = rxjs.fromEvent(text_input, 'keydown')
+  .pipe(
+    rxjs.operators.map((e) => {
+      if (e.keyCode === 8 && text_input.value.length > 0) {
+        console.log('Borraste un caracter');
+        return -1;
+      }
+      else if (e.keyCode !== 8 && e.keyCode !== 16 && e.keyCode !== 20){
+        console.log('Escribiste un caracter');
+        return 1;
+      }
+    }),
+    rxjs.operators.scan((x, y) => x + y, 0)
+  );
+
+countSubject.subscribe( (count) => {
+  console.log(count);
+  const p = document.getElementById('p-progress');
+  p.innerHTML = `${count}/${game_sentence.length}`;
+});
+
+*/
 
 });

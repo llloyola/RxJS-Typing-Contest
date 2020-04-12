@@ -91,62 +91,63 @@ wsServer.on('request', function(request) {
 
     // user sent some message
     connection.on('message', function(message) {
-        if (message.type === 'utf8') { // accept only text
-            if (userName === false) { // first message sent by user is their name
-                userName = message.utf8Data;
-                userName = userName.replace(/['"]+/g, '');
-                userPlayer = playersNumbers.shift();
-                connection.sendUTF(JSON.stringify({ type:'player', data: userPlayer, username: userName }));
+        console.log(message);
+        message = JSON.parse(message.utf8Data);
+        if (message.type === 'username') {
+            userName = message.data;
+            userPlayer = playersNumbers.shift();
+            connection.sendUTF(JSON.stringify({ type:'player', data: userPlayer, username: userName }));
 
-                console.log(`${new Date()} User is known as ${userName} with number ${userPlayer}`);
+            console.log(`${new Date()} User is known as ${userName} with number ${userPlayer}`);
 
-                // Add player to currently connected players list
-                players[userPlayer] = { name: userName };
+            // Add player to currently connected players list
+            players[userPlayer] = { name: userName };
 
-                // Send players list to all players
-                for (var i=0; i < clients.length; i++) {
-                  clients[i].sendUTF(JSON.stringify({ type:'players', data: Object.keys(players).map((k) => [k, players[k].name]) }));
-                }
+            // Send players list to all players
+            for (var i=0; i < clients.length; i++) {
+              clients[i].sendUTF(JSON.stringify({ type:'players', data: Object.keys(players).map((k) => [k, players[k].name]) }));
+            }
 
-                // If all players are connected send "start game" message
-                if (Object.keys(players).length === PLAYER_COUNT) {
-                    const frases = Promise.all([randomQuote(), randomQuote(), randomQuote()])
-                    .then(result => {
-                        sentence = result.join(' ');
-                        for (var i=0; i < clients.length; i++) {
-                            clients[i].sendUTF(JSON.stringify({ type:'game-beginning', data: sentence }));
-                        }
-                        console.log(`${new Date()} A match is about to start!  ${userPlayer} - ${userName}`);
-                    });
-                }
+            // If all players are connected send "start game" message
+            if (Object.keys(players).length === PLAYER_COUNT) {
+                const frases = Promise.all([randomQuote(), randomQuote(), randomQuote()])
+                .then(result => {
+                    sentence = result.join(' ');
+                    for (var i=0; i < clients.length; i++) {
+                        clients[i].sendUTF(JSON.stringify({ type:'game-beginning', data: sentence }));
+                    }
+                    console.log(`${new Date()} A match is about to start!  ${userPlayer} - ${userName}`);
+                });
+            }
 
-            } else { // log and broadcast the message
-                console.log(`${new Date()} Received message from player ${userPlayer}: ${message.utf8Data}`);
+        } else if (message.type === "progress"){
+            console.log(`${new Date()} Received message from player ${userPlayer}: ${message.utf8Data}`);
 
+            var playerProgress = parseInt(message.data) / sentence.length;
 
-                var playerProgress = parseInt(message.utf8Data) / sentence.length;
+            var obj = {
+                time: (new Date()).getTime(),
+                playerProgress: playerProgress,
+                author: userName,
+                player: userPlayer
+            };
 
-                // we want to keep history of all sent messages
-                var obj = {
-                    time: (new Date()).getTime(),
-                    playerProgress: playerProgress,
-                    author: userName,
-                    player: userPlayer
-                };
+            // broadcast message to all connected clients
+            var json = JSON.stringify({ type:'message', data: obj });
+            for (var i=0; i < clients.length; i++) {
+                clients[i].sendUTF(json);
+            }
 
-                // broadcast message to all connected clients
-                var json = JSON.stringify({ type:'message', data: obj });
-                for (var i=0; i < clients.length; i++) {
-                    clients[i].sendUTF(json);
-                }
-
-                // if player progress exceeds sentence length end game
-                if (playerProgress === 1) {
-                  for (var i=0; i < clients.length; i++) {
-                    clients[i].sendUTF(JSON.stringify({ type:'game-ending', data: {"player": userPlayer} }));
-                  }
-                  players = {};
-                }
+            // if player progress exceeds sentence length end game
+            if (playerProgress === 1) {
+              for (var i=0; i < clients.length; i++) {
+                clients[i].sendUTF(JSON.stringify({ type:'game-ending', data: {"player": userPlayer} }));
+              }
+              players = {};
+              playersNumbers = [...Array(PLAYER_COUNT).keys()];
+              for (var i=0; i < clients.length; i++) {
+                clients[i].sendUTF(JSON.stringify({ type:'players', data: Object.keys(players).map((k) => [k, players[k].name]) }));
+              }
             }
         }
     });
