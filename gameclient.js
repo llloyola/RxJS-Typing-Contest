@@ -45,10 +45,10 @@ const CHECK_INTERVAL = 10;
 let pointer = 0;
 
 // Production websocket
-const subject = rxjs.webSocket.webSocket(`ws://typing-contest-game.herokuapp.com`);
+//const subject = rxjs.webSocket.webSocket(`ws://typing-contest-game.herokuapp.com`);
 
 // Development websocket
-//const subject = rxjs.webSocket.webSocket(`ws://localhost:1338`);
+const subject = rxjs.webSocket.webSocket(`ws://localhost:1338`);
 
 
 document.addEventListener("DOMContentLoaded", function(event) {
@@ -79,6 +79,9 @@ subject.subscribe(
     }
     else if (msg.type === "player") {
       console.log("You are player number  " + msg.data);
+      let playernumber = `playername${msg.data}`;
+      let playername = document.getElementById(playernumber);
+      playername.innerHTML = msg.username.replace(/['"]+/g, '');
     }
   }, // Called whenever there is a message from the server.
   err => console.log(err), // Called if at any point WebSocket API signals some kind of error.
@@ -86,7 +89,6 @@ subject.subscribe(
 );
 
 subject.subscribe();
-subject.next('Yo');
 
 // Observer for whats being typed on textarea
 const typing_observer = {

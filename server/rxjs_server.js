@@ -108,7 +108,7 @@ wsServer.on('request', function(request) {
             if (userName === false) { // first message sent by user is their name
                 userName = message.utf8Data;
                 userPlayer = playersNumbers.shift();
-                connection.sendUTF(JSON.stringify({ type:'player', data: userPlayer }));
+                connection.sendUTF(JSON.stringify({ type:'player', data: userPlayer, username: userName }));
                 console.log(`${new Date()} User is known as ${userName} with number ${userPlayer}`);
 
 
