@@ -88,9 +88,6 @@ wsServer.on('request', function(request) {
     }
     console.log(`${new Date()} Connection from origin ${request.origin}.`);
 
-    // accept connection - you should check 'request.origin' to make sure that
-    // client is connecting from your website
-    // (http://en.wikipedia.org/wiki/Same_origin_policy)
     var connection = request.accept(null, request.origin); 
     // we need to know client index to remove them on 'close' event
     var index = clients.push(connection) - 1;
@@ -166,6 +163,7 @@ wsServer.on('request', function(request) {
             console.log(`${new Date()} Peer ${userPlayer} disconnected.`);
             // remove user from the list of connected clients
             clients.splice(index, 1);
+            console.log(clients);
             // push back user's number to be reused by another user
             playersNumbers.push(userPlayer);
             playersNumbers = playersNumbers.sort();
