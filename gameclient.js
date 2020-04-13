@@ -108,7 +108,21 @@ const resetGame = (winner) => {
     document.getElementById(`ImgPlayer${e}`).getElementsByClassName("loser-message")[0].style.display = "none";
     document.getElementById(`ImgPlayer${e}`).getElementsByClassName("winner-message")[0].style.display = "none";
   });
+}
 
+const hideLogin = (message) => {
+  let playerWinnerBanner = document.getElementById("modal-winner-banner");
+  playerWinnerBanner.innerHTML = message;
+  let modalLogin = document.getElementById("modal-insert-name");
+  modalLogin.style.display = "none";
+
+}
+
+const showLogin = (message) => {
+  let playerWinnerBanner = document.getElementById("modal-winner-banner");
+  playerWinnerBanner.innerHTML = message;
+  let modalLogin = document.getElementById("modal-insert-name");
+  modalLogin.style.display = "block";
 }
 
 
@@ -140,10 +154,12 @@ const subject = rxjs.webSocket.webSocket(`wss://typing-contest-game.herokuapp.co
 
 document.addEventListener("DOMContentLoaded", function(event) {
 
+let in_lobby = false;
 const text_input = document.getElementById("textinput");
 const sentence_placeholder = document.getElementById("sentenceplaceholder");
 let game_sentence = '';
 sentenceplaceholder.innerHTML = game_sentence;
+
 
 // Erase input
 text_input.value = "";
@@ -165,12 +181,19 @@ subject.subscribe(
     }
     else if (msg.type === "game-ending"){
       resetGame(msg.data.player);
+      in_lobby = false;
     }
     else if (msg.type === "player") {
       console.log("You are player number  " + msg.data);
+      in_lobby = true;
     }
     else if (msg.type === "players") {
       let playersList = msg.data;
+      if (playersList.length >= 3) {
+        hideLogin("Lobby completo - espere");
+      } else if(!in_lobby) {
+        showLogin("");
+      }
 
       // Change character names
       playersList.forEach((e) => {
