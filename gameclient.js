@@ -190,8 +190,6 @@ subject.subscribe(
   () => console.log('complete')
 );
 
-subject.subscribe();
-
 // Game Lobby modal
 //$("#modal-btn").click(() => {
 //  console.log("-------");
