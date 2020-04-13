@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/css/toggle-bootstrap-dark.min.css" />
 
     <!-- RxJS -->
     <script src="https://unpkg.com/rxjs/bundles/rxjs.umd.js"></script>
@@ -29,9 +30,12 @@
     <div class="modal-bg" id="modal-bg">
       <div class="modal-content">
         <div id="modal-insert-name">
-          <h1>Ingresa tu nombre</h1>
-          <input id="nameplayer" type="text" name="name">
-          <button id="modal-btn" type="button" class="btn">Ready</button>
+          <h1 class="row">Ingresa tu nombre</h1>
+          <div class="row">
+            <br/>
+            <input class="col-sm-5 col-sm-offset-1" id="nameplayer" type="text" name="name">
+            <button id="modal-btn" type="button" class="btn col-sm-4 col-sm-offset-1">Ready</button>
+          </div>
         </div>
         </br>
         <div id="modal-players-list">
