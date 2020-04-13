@@ -101,7 +101,7 @@ wsServer.on('request', function(request) {
             console.log(`${new Date()} User is known as ${userName} with number ${userPlayer}`);
 
             // Add player to currently connected players list
-            players[userPlayer] = { name: userName };
+            players[userPlayer] = { name: userName, connection: connection};
 
             // Send players list to all players
             for (var i=0; i < clients.length; i++) {
@@ -113,9 +113,9 @@ wsServer.on('request', function(request) {
                 const frases = Promise.all([randomQuote(), randomQuote(), randomQuote()])
                 .then(result => {
                     sentence = result.join(' ');
-                    for (var i=0; i < clients.length; i++) {
-                        clients[i].sendUTF(JSON.stringify({ type:'game-beginning', data: sentence }));
-                    }
+                    Object.keys(players).forEach((k) => {
+                        players[k].connection.sendUTF(JSON.stringify({ type:'game-beginning', data: sentence }));
+                    });
                     console.log(`${new Date()} A match is about to start!  ${userPlayer} - ${userName}`);
                 });
             }
@@ -134,15 +134,15 @@ wsServer.on('request', function(request) {
 
             // broadcast message to all connected clients
             var json = JSON.stringify({ type:'message', data: obj });
-            for (var i=0; i < clients.length; i++) {
-                clients[i].sendUTF(json);
-            }
+            Object.keys(players).forEach((k) => {
+                players[k].connection.sendUTF(json);
+            });
 
             // if player progress exceeds sentence length end game
             if (playerProgress === 1) {
-              for (var i=0; i < clients.length; i++) {
-                clients[i].sendUTF(JSON.stringify({ type:'game-ending', data: {"player": userPlayer} }));
-              }
+              Object.keys(players).forEach((k) => {
+                players[k].connection.sendUTF(JSON.stringify({ type:'game-ending', data: {"player": userName} }));
+              });
               players = {};
               playersNumbers = [...Array(PLAYER_COUNT).keys()];
               for (var i=0; i < clients.length; i++) {

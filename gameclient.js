@@ -96,8 +96,10 @@ const resetPlayersPosition = (array) => {
   array.forEach((e) => resetPlayerPosition(e));
 }
 
-const resetGame = () => {
+const resetGame = (winner) => {
   const playersList = [0, 1, 2];
+  let playerWinnerBanner = document.getElementById("modal-winner-banner");
+  playerWinnerBanner.innerHTML = `${winner} es el ganador!!!`
   showModal();
   resetPlayersPosition(playersList);
   pointer = 0;
@@ -162,7 +164,7 @@ subject.subscribe(
       updatePlayerPosition(player, progress);
     }
     else if (msg.type === "game-ending"){
-      resetGame();
+      resetGame(msg.data.player);
     }
     else if (msg.type === "player") {
       console.log("You are player number  " + msg.data);
@@ -172,6 +174,7 @@ subject.subscribe(
 
       // Change character names
       playersList.forEach((e) => {
+        console.log(e);
         let playerNameDiv = document.getElementById(`playername${e[0]}`);
         playerNameDiv.innerHTML = e[1];
       });
