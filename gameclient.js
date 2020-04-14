@@ -123,10 +123,10 @@ const resetGame = (winner) => {
 
 
 // Production websocket
-const subject = rxjs.webSocket.webSocket(`wss://typing-contest-game.herokuapp.com`);
+// const subject = rxjs.webSocket.webSocket(`wss://typing-contest-game.herokuapp.com`);
 
 // Development websocket
-//const subject = rxjs.webSocket.webSocket(`ws://localhost:1338`);
+const subject = rxjs.webSocket.webSocket(`ws://localhost:1338`);
 
 
 
@@ -220,9 +220,6 @@ const typing_observer = {
    let actual_text = game_sentence.substring(pointer, pointer + text.length);
    let next_text = game_sentence.substring(pointer + text.length);
 
-   //const p = document.getElementById('p-progress');
-   //p.innerHTML = `${prev_text.length + text.length}/${game_sentence.length}`;
-
    if (text.localeCompare(actual_text)) {
      sentenceplaceholder.innerHTML = `<span class="correcttext" >${prev_text}</span><span class="wrongtext" >${actual_text}</span>${next_text}`;
    } else {
@@ -243,7 +240,33 @@ const typing_observer = {
 };
 
 // Observable from KeyUp event
-const observable = rxjs.fromEvent(text_input, "keyup");
+const observable = rxjs.fromEvent(text_input, "keyup")
+//  .pipe(
+//    rxjs.operators.filter((e) => {
+//      if (e.keyCode !== 16 && e.keyCode !== 20) {
+//        return false;
+//      }
+//      else {
+//        return true;
+//      }
+//    }),
+//    rxjs.operators.map((e) => {
+//      if (e.keyCode === 8 && text_input.value.length > 0) {
+//        console.log('Borraste un caracter');
+//        return -1;
+//      }
+//      else if (e.keyCode !== 8){
+//        console.log('Escribiste un caracter');
+//        return 1;
+//      }
+//      else {
+//        console.log('Esa tecla no cuenta jaja');
+//        return 0;
+//      }
+//    }),
+//    rxjs.operators.scan((x, y) => x + y, 0),
+//    rxjs.operators.filter((count) => (count % CHECK_INTERVAL === 0 && count > 0) || count === game_sentence.length)
+//  );
 
 // Subscribe to begin listening
 observable.subscribe(typing_observer);
@@ -270,8 +293,6 @@ const countSubject = rxjs.fromEvent(text_input, 'keydown')
   );
 
 const p = document.getElementById('p-progress');
-
-console.log("AAAAAAAAAAAAAh");
 
 const countObersver = {
   next: (count) => {
