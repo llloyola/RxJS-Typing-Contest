@@ -220,8 +220,8 @@ const typing_observer = {
    let actual_text = game_sentence.substring(pointer, pointer + text.length);
    let next_text = game_sentence.substring(pointer + text.length);
 
-   const p = document.getElementById('p-progress');
-   p.innerHTML = `${prev_text.length + text.length}/${game_sentence.length}`;
+   //const p = document.getElementById('p-progress');
+   //p.innerHTML = `${prev_text.length + text.length}/${game_sentence.length}`;
 
    if (text.localeCompare(actual_text)) {
      sentenceplaceholder.innerHTML = `<span class="correcttext" >${prev_text}</span><span class="wrongtext" >${actual_text}</span>${next_text}`;
@@ -248,7 +248,7 @@ const observable = rxjs.fromEvent(text_input, "keyup");
 // Subscribe to begin listening
 observable.subscribe(typing_observer);
 
-/*
+
 // Typing count
 const countSubject = rxjs.fromEvent(text_input, 'keydown')
   .pipe(
@@ -261,16 +261,27 @@ const countSubject = rxjs.fromEvent(text_input, 'keydown')
         console.log('Escribiste un caracter');
         return 1;
       }
+      else {
+        console.log('Esa tecla no cuenta jaja');
+        return 0;
+      }
     }),
     rxjs.operators.scan((x, y) => x + y, 0)
   );
 
-countSubject.subscribe( (count) => {
-  console.log(count);
-  const p = document.getElementById('p-progress');
-  p.innerHTML = `${count}/${game_sentence.length}`;
-});
+const p = document.getElementById('p-progress');
 
-*/
+console.log("AAAAAAAAAAAAAh");
+
+const countObersver = {
+  next: (count) => {
+    console.log(`Count: ${count}`);
+    p.innerHTML = `${count}/${game_sentence.length}`;
+  },
+  error: (err) => {console.log(err)},
+  complete: () => {console.log('Completed')}
+};
+
+countSubject.subscribe(countObersver);
 
 });
