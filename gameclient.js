@@ -126,7 +126,7 @@ const resetGame = (winner) => {
 const subject = rxjs.webSocket.webSocket(`wss://typing-contest-game.herokuapp.com`);
 
 // Development websocket
-// const subject = rxjs.webSocket.webSocket(`ws://localhost:1338`);
+const subject = rxjs.webSocket.webSocket(`ws://localhost:1338`);
 
 
 
@@ -164,6 +164,7 @@ subject.subscribe(
       updatePlayerPosition(player, progress);
     }
     else if (msg.type === "game-ending"){
+      resetSubject();
       resetGame(msg.data.player);
     }
     else if (msg.type === "player") {
@@ -250,15 +251,12 @@ const countSubject = rxjs.fromEvent(text_input, 'keydown')
       }),
     rxjs.operators.map((e) => {
       if (e.keyCode === 8 && text_input.value.length > 0) {
-        console.log('Borraste un caracter');
         return -1;
       }
       else if (e.keyCode !== 8){
-        console.log('Escribiste un caracter');
         return 1;
       }
       else {
-        console.log('Esa tecla no cuenta jaja');
         return 0;
       }
     }),
@@ -277,5 +275,10 @@ const countObersver = {
 };
 
 countSubject.subscribe(countObersver);
+
+const resetSubject = () => {
+  countSubject.unsubscribe();
+  countSubject.subscribe(countObersver);
+};
 
 });
