@@ -110,9 +110,11 @@ wsServer.on('request', function(request) {
 
             // If all players are connected send "start game" message
             if (Object.keys(players).length === PLAYER_COUNT) {
-                const frases = Promise.all([randomQuote(), randomQuote(), randomQuote()])
+                Promise.all([randomQuote(), randomQuote()])
                 .then(result => {
                     sentence = result.join(' ');
+                    sentence = sentence.replace(/’+/g, "'");
+                    console.log(sentence);
                     Object.keys(players).forEach((k) => {
                         players[k].connection.sendUTF(JSON.stringify({ type:'game-beginning', data: sentence }));
                     });
