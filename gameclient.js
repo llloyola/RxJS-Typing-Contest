@@ -244,17 +244,51 @@ const typing_observer = {
 
 // Observable from KeyUp event
 const observable = rxjs.fromEvent(text_input, "keyup")
+// .pipe(
+//  rxjs.operators.filter((e) => {
+//    if (e.keyCode === 16 || e.keyCode === 20) {
+//      return false;
+//    }
+//    else {
+//      return true;
+//    }
+//  }),
+//  rxjs.operators.map((e) => {
+//    if (e.keyCode === 8 && text_input.value.length == 0) {
+//      console.log('Borraste un caracter');
+//      return -1;
+//    }
+//    else if (e.keyCode !== 8){
+//      console.log('Escribiste un caracter');
+//      return 1;
+//    }
+//    else {
+//      console.log('Esa tecla no cuenta jaja');
+//      return 0;
+//    }
+//  }),
+//  rxjs.operators.scan((x, y) => x + y, 0),
+//  rxjs.operators.tap((x) => {console.log(x)}),
+//  rxjs.operators.filter((count) => (count % CHECK_INTERVAL === 0 && count > 0) || count === game_sentence.length)
+// );
+
+// Subscribe to begin listening
+observable.subscribe(typing_observer);
+
+
+// Typing count
+const countSubject = rxjs.fromEvent(text_input, 'keydown')
   .pipe(
     rxjs.operators.filter((e) => {
-      if (e.keyCode === 16 && e.keyCode === 20) {
-        return false;
-      }
-      else {
-        return true;
-      }
-    }),
+        if (e.keyCode === 16 || e.keyCode === 20) {
+          return false;
+        }
+        else {
+          return true;
+        }
+      }),
     rxjs.operators.map((e) => {
-      if (e.keyCode === 8 && text_input.value.length == 0) {
+      if (e.keyCode === 8 && text_input.value.length > 0) {
         console.log('Borraste un caracter');
         return -1;
       }
@@ -264,32 +298,6 @@ const observable = rxjs.fromEvent(text_input, "keyup")
       }
       else {
         console.log('Esa tecla no cuenta jaja');
-        return 0;
-      }
-    }),
-    rxjs.operators.scan((x, y) => x + y, 0),
-    rxjs.operators.tap((x) => {console.log(x)}),
-    rxjs.operators.filter((count) => (count % CHECK_INTERVAL === 0 && count > 0) || count === game_sentence.length)
-  );
-
-// Subscribe to begin listening
-observable.subscribe(typing_observer);
-
-
-// Typing count
-const countSubject = rxjs.fromEvent(text_input, 'keydown')
-  .pipe(
-    rxjs.operators.map((e) => {
-      if (e.keyCode === 8 && text_input.value.length > 0) {
-        //console.log('Borraste un caracter');
-        return -1;
-      }
-      else if (e.keyCode !== 8 && e.keyCode !== 16 && e.keyCode !== 20){
-        //console.log('Escribiste un caracter');
-        return 1;
-      }
-      else {
-        //console.log('Esa tecla no cuenta jaja');
         return 0;
       }
     }),

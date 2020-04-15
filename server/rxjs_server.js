@@ -7,7 +7,7 @@ var http = require('http');
 
 process.title = 'typing-race';
 
-
+// Server basado en https://gist.github.com/martinsik/2031681
 
 /**********************
 
