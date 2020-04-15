@@ -103,6 +103,7 @@ const resetGame = (winner) => {
   showModal();
   resetPlayersPosition(playersList);
   pointer = 0;
+  text_input.value = '';
 
   playersList.forEach((e) => {
     document.getElementById(`ImgPlayer${e}`).getElementsByClassName("loser-message")[0].style.display = "none";
@@ -126,7 +127,7 @@ const resetGame = (winner) => {
 const subject = rxjs.webSocket.webSocket(`wss://typing-contest-game.herokuapp.com`);
 
 // Development websocket
-const subject = rxjs.webSocket.webSocket(`ws://localhost:1338`);
+// const subject = rxjs.webSocket.webSocket(`ws://localhost:1338`);
 
 
 
@@ -164,7 +165,6 @@ subject.subscribe(
       updatePlayerPosition(player, progress);
     }
     else if (msg.type === "game-ending"){
-      resetSubject();
       resetGame(msg.data.player);
     }
     else if (msg.type === "player") {
@@ -275,10 +275,5 @@ const countObersver = {
 };
 
 countSubject.subscribe(countObersver);
-
-const resetSubject = () => {
-  countSubject.unsubscribe();
-  countSubject.subscribe(countObersver);
-};
 
 });
