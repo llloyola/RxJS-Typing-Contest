@@ -103,6 +103,7 @@ const resetGame = (winner) => {
   showModal();
   resetPlayersPosition(playersList);
   pointer = 0;
+  const text_input = document.getElementById("textinput");
   text_input.value = '';
 
   playersList.forEach((e) => {
