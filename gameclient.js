@@ -194,14 +194,6 @@ subject.subscribe(
 );
 
 // Game Lobby modal
-//$("#modal-btn").click(() => {
-//  console.log("-------");
-//  let text_input = document.getElementById("nameplayer");
-//  subject.next(text_input.value);
-//  text_input.value = "";
-//  document.getElementById("modal-insert-name").style.display = "none";
-//});
-//
 const modalBtn = document.getElementById('modal-btn');
 const clickSubject = rxjs.fromEvent(modalBtn, 'click');
 clickSubject.subscribe(() => {
@@ -220,13 +212,10 @@ const typing_observer = {
    let next_text = game_sentence.substring(pointer + text.length);
 
    if (text.localeCompare(actual_text)) {
-     console.log("CASO 1");
      sentenceplaceholder.innerHTML = `<span class="correcttext" >${prev_text}</span><span class="wrongtext" >${actual_text}</span>${next_text}`;
    } else {
-     console.log("CASO 2");
      sentenceplaceholder.innerHTML = `<span class="correcttext" >${prev_text}</span><span class="correcttext" >${actual_text}</span>${next_text}`;
      if (text.length >= CHECK_INTERVAL || next_text === ""){
-       console.log("CASO 2.1");
        pointer += text.length;
        subject.next({ type: "progress", data: pointer });
        text_input.value = "";
