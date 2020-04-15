@@ -221,10 +221,13 @@ const typing_observer = {
    let next_text = game_sentence.substring(pointer + text.length);
 
    if (text.localeCompare(actual_text)) {
+     console.log("CASO 1");
      sentenceplaceholder.innerHTML = `<span class="correcttext" >${prev_text}</span><span class="wrongtext" >${actual_text}</span>${next_text}`;
    } else {
+     console.log("CASO 2");
      sentenceplaceholder.innerHTML = `<span class="correcttext" >${prev_text}</span><span class="correcttext" >${actual_text}</span>${next_text}`;
      if (text.length >= CHECK_INTERVAL || next_text === ""){
+       console.log("CASO 2.1");
        pointer += text.length;
        subject.next({ type: "progress", data: pointer });
        text_input.value = "";
@@ -241,32 +244,33 @@ const typing_observer = {
 
 // Observable from KeyUp event
 const observable = rxjs.fromEvent(text_input, "keyup")
-//  .pipe(
-//    rxjs.operators.filter((e) => {
-//      if (e.keyCode !== 16 && e.keyCode !== 20) {
-//        return false;
-//      }
-//      else {
-//        return true;
-//      }
-//    }),
-//    rxjs.operators.map((e) => {
-//      if (e.keyCode === 8 && text_input.value.length > 0) {
-//        console.log('Borraste un caracter');
-//        return -1;
-//      }
-//      else if (e.keyCode !== 8){
-//        console.log('Escribiste un caracter');
-//        return 1;
-//      }
-//      else {
-//        console.log('Esa tecla no cuenta jaja');
-//        return 0;
-//      }
-//    }),
-//    rxjs.operators.scan((x, y) => x + y, 0),
-//    rxjs.operators.filter((count) => (count % CHECK_INTERVAL === 0 && count > 0) || count === game_sentence.length)
-//  );
+  .pipe(
+    rxjs.operators.filter((e) => {
+      if (e.keyCode === 16 && e.keyCode === 20) {
+        return false;
+      }
+      else {
+        return true;
+      }
+    }),
+    rxjs.operators.map((e) => {
+      if (e.keyCode === 8 && text_input.value.length == 0) {
+        console.log('Borraste un caracter');
+        return -1;
+      }
+      else if (e.keyCode !== 8){
+        console.log('Escribiste un caracter');
+        return 1;
+      }
+      else {
+        console.log('Esa tecla no cuenta jaja');
+        return 0;
+      }
+    }),
+    rxjs.operators.scan((x, y) => x + y, 0),
+    rxjs.operators.tap((x) => {console.log(x)}),
+    rxjs.operators.filter((count) => (count % CHECK_INTERVAL === 0 && count > 0) || count === game_sentence.length)
+  );
 
 // Subscribe to begin listening
 observable.subscribe(typing_observer);
@@ -277,15 +281,15 @@ const countSubject = rxjs.fromEvent(text_input, 'keydown')
   .pipe(
     rxjs.operators.map((e) => {
       if (e.keyCode === 8 && text_input.value.length > 0) {
-        console.log('Borraste un caracter');
+        //console.log('Borraste un caracter');
         return -1;
       }
       else if (e.keyCode !== 8 && e.keyCode !== 16 && e.keyCode !== 20){
-        console.log('Escribiste un caracter');
+        //console.log('Escribiste un caracter');
         return 1;
       }
       else {
-        console.log('Esa tecla no cuenta jaja');
+        //console.log('Esa tecla no cuenta jaja');
         return 0;
       }
     }),
