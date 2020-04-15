@@ -103,6 +103,8 @@ const resetGame = (winner) => {
   showModal();
   resetPlayersPosition(playersList);
   pointer = 0;
+  const text_input = document.getElementById("textinput");
+  text_input.value = '';
 
   playersList.forEach((e) => {
     document.getElementById(`ImgPlayer${e}`).getElementsByClassName("loser-message")[0].style.display = "none";
@@ -140,7 +142,7 @@ const showLogin = (message) => {
 const subject = rxjs.webSocket.webSocket(`wss://typing-contest-game.herokuapp.com`);
 
 // Development websocket
-//const subject = rxjs.webSocket.webSocket(`ws://localhost:1338`);
+// const subject = rxjs.webSocket.webSocket(`ws://localhost:1338`);
 
 
 
@@ -217,18 +219,9 @@ subject.subscribe(
 );
 
 // Game Lobby modal
-//$("#modal-btn").click(() => {
-//  console.log("-------");
-//  let text_input = document.getElementById("nameplayer");
-//  subject.next(text_input.value);
-//  text_input.value = "";
-//  document.getElementById("modal-insert-name").style.display = "none";
-//});
-//
 const modalBtn = document.getElementById('modal-btn');
 const clickSubject = rxjs.fromEvent(modalBtn, 'click');
 clickSubject.subscribe(() => {
-  console.log("-------");
   let text_input = document.getElementById("nameplayer");
   subject.next({ type: "username", data: text_input.value });
   text_input.value = "";
@@ -242,9 +235,6 @@ const typing_observer = {
    let prev_text = game_sentence.substring(0, pointer);
    let actual_text = game_sentence.substring(pointer, pointer + text.length);
    let next_text = game_sentence.substring(pointer + text.length);
-
-   const p = document.getElementById('p-progress');
-   p.innerHTML = `${prev_text.length + text.length}/${game_sentence.length}`;
 
    if (text.localeCompare(actual_text)) {
      sentenceplaceholder.innerHTML = `<span class="correcttext" >${prev_text}</span><span class="wrongtext" >${actual_text}</span>${next_text}`;
@@ -271,29 +261,43 @@ const observable = rxjs.fromEvent(text_input, "keyup");
 // Subscribe to begin listening
 observable.subscribe(typing_observer);
 
-/*
+
 // Typing count
 const countSubject = rxjs.fromEvent(text_input, 'keydown')
   .pipe(
+    rxjs.operators.filter((e) => {
+        if (e.keyCode === 16 || e.keyCode === 20) {
+          return false;
+        }
+        else {
+          return true;
+        }
+      }),
     rxjs.operators.map((e) => {
       if (e.keyCode === 8 && text_input.value.length > 0) {
-        console.log('Borraste un caracter');
         return -1;
       }
-      else if (e.keyCode !== 8 && e.keyCode !== 16 && e.keyCode !== 20){
-        console.log('Escribiste un caracter');
+      else if (e.keyCode !== 8){
         return 1;
+      }
+      else {
+        return 0;
       }
     }),
     rxjs.operators.scan((x, y) => x + y, 0)
   );
 
-countSubject.subscribe( (count) => {
-  console.log(count);
-  const p = document.getElementById('p-progress');
-  p.innerHTML = `${count}/${game_sentence.length}`;
-});
+const p = document.getElementById('p-progress');
 
-*/
+const countObersver = {
+  next: (count) => {
+    console.log(`Count: ${count}`);
+    p.innerHTML = `${count}/${game_sentence.length}`;
+  },
+  error: (err) => {console.log(err)},
+  complete: () => {console.log('Completed')}
+};
+
+countSubject.subscribe(countObersver);
 
 });
